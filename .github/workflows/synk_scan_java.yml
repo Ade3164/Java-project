@@ -1,0 +1,47 @@
+name: Snyk Java Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # Set up Java environment
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17' # Adjust this based on your project's Java version
+          distribution: 'temurin' # Can be 'zulu', 'adopt', etc.
+
+      # Install Snyk
+      - name: Install Snyk
+        run: npm install -g snyk
+
+      # Authenticate Snyk
+      - name: Authenticate Snyk
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk auth $SNYK_TOKEN
+
+      # Run Snyk scan for Maven or Gradle projects
+      - name: Run Snyk Test
+        run: |
+          snyk test --all-projects --json-file-output=snyk_report.json
+
+      # Upload Snyk scan results as an artifact
+      - name: Upload Snyk Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: snyk-report
+          path: snyk_report.json

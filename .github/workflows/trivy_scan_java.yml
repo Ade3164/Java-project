@@ -1,0 +1,47 @@
+name: Trivy Java Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  trivy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # Step 2: Install Trivy
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.41.0
+
+      # Step 3: Run Trivy to scan Java dependency files
+      - name: Run Trivy Scan
+        run: |
+          trivy fs . --exit-code 1 --severity HIGH,CRITICAL --skip-dirs target > trivy.log
+
+      # Step 4: Analyze Trivy Report to count dependencies and vulnerabilities
+      - name: Analyze Trivy Report
+        run: |
+          total_vulnerabilities=$(grep -o "Severity: HIGH\|Severity: CRITICAL" trivy.log | wc -l)
+          echo "Total HIGH or CRITICAL vulnerabilities: $total_vulnerabilities"
+          if [ $total_vulnerabilities -gt 0 ]; then
+            echo "HIGH or CRITICAL vulnerabilities detected!"
+            cat trivy.log
+          else
+            echo "No HIGH or CRITICAL vulnerabilities found."
+          fi
+
+      # Step 5: Upload the scan results
+      - name: Upload Trivy Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: trivy-report
+          path: trivy.log
