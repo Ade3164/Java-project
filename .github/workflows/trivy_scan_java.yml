@@ -17,17 +17,32 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      # Step 2: Install Trivy
+      # Step 2: Set up Java
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11' # Update to match your project's Java version
+
+      # Step 3: Build project dependencies
+      # Use Maven or Gradle based on the build tool used in your project
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+        # Uncomment the following for Gradle
+        # - name: Build with Gradle
+        #   run: ./gradlew build -x test
+
+      # Step 4: Install Trivy
       - name: Install Trivy
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.41.0
 
-      # Step 3: Run Trivy to scan Java dependency files
+      # Step 5: Run Trivy to scan the project
       - name: Run Trivy Scan
         run: |
           trivy fs . --exit-code 1 --severity HIGH,CRITICAL --skip-dirs target > trivy.log
 
-      # Step 4: Analyze Trivy Report to count dependencies and vulnerabilities
+      # Step 6: Analyze Trivy Report to count vulnerabilities
       - name: Analyze Trivy Report
         run: |
           total_vulnerabilities=$(grep -o "Severity: HIGH\|Severity: CRITICAL" trivy.log | wc -l)
@@ -39,7 +54,7 @@ jobs:
             echo "No HIGH or CRITICAL vulnerabilities found."
           fi
 
-      # Step 5: Upload the scan results
+      # Step 7: Upload the scan results
       - name: Upload Trivy Report
         uses: actions/upload-artifact@v3
         with:
