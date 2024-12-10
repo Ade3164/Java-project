@@ -1,0 +1,56 @@
+dependencies {
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter:3.1.0'
+
+    // Hibernate
+    implementation 'org.hibernate:hibernate-core:6.2.5.Final'
+
+    // Log4j
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // JUnit
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+
+    // Apache Commons Lang
+    implementation 'org.apache.commons:commons-lang3:3.13.0'
+
+    // Jackson Databind
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+
+    // Guava
+    implementation 'com.google.guava:guava:32.1.2-jre'
+
+    // SLF4J
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+    // OkHttp
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // Joda-Time
+    implementation 'joda-time:joda-time:2.12.5'
+
+    // Logback
+    implementation 'ch.qos.logback:logback-classic:1.4.9'
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
+
+    // Apache POI
+    implementation 'org.apache.poi:poi:5.2.3'
+
+    // Apache HttpComponents Client
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+
+    // Jersey
+    implementation 'org.glassfish.jersey.core:jersey-client:3.1.1'
+}
