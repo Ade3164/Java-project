@@ -37,7 +37,7 @@ jobs:
       # Run Snyk scan for Maven or Gradle projects
       - name: Run Snyk Test
         run: |
-          snyk test --all-projects --json-file-output=snyk_report.json
+          snyk test --all-projects --json-file-output=snyk_report.json --severity-threshold=low
 
       # Upload Snyk scan results as an artifact
       - name: Upload Snyk Report
