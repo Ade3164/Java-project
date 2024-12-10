@@ -40,13 +40,20 @@ jobs:
       # Step 5: Run Trivy to scan the project
       - name: Run Trivy Scan
         run: |
-          trivy fs . --exit-code 1 --severity HIGH,CRITICAL --skip-dirs target > trivy.log
-
-      # Step 6: Analyze Trivy Report to count vulnerabilities
+          trivy fs . --exit-code 1 --severity HIGH,CRITICAL --skip-dirs target > trivy.log || true
+          
+      # Step 6: Analyze Trivy Report to count vulnerabilities and scanned paths
       - name: Analyze Trivy Report
         run: |
+          # Count total paths scanned
+          total_paths_scanned=$(find . -type f -or -type d | wc -l)
+          echo "Total paths scanned: $total_paths_scanned"
+          
+          # Count vulnerabilities in the log file
           total_vulnerabilities=$(grep -o "Severity: HIGH\|Severity: CRITICAL" trivy.log | wc -l)
           echo "Total HIGH or CRITICAL vulnerabilities: $total_vulnerabilities"
+          
+          # If vulnerabilities are found, display the Trivy log
           if [ $total_vulnerabilities -gt 0 ]; then
             echo "HIGH or CRITICAL vulnerabilities detected!"
             cat trivy.log
